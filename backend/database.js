@@ -8,23 +8,27 @@ const pool = mariadb.createPool({
 });
 
 module.exports = {
-  async run(query) {
-    return new Promise((resolve) => {
+  async run(query, params) {
+    return new Promise((resolve, reject) => {
       pool
         .getConnection()
         .then((conn) => {
           conn
-            .query(query)
+            .query(query, params)
             .then((rows) => {
               resolve(rows);
+              conn.end(); // (필수) connection 종료
             })
             .catch((err) => {
               console.log(err);
-              conn.end();
+              conn.end(); // (필수) connection 종료
+              reject(err);
             });
         })
         .catch((err) => {
           //not connected
+          console.log(err);
+          reject(err);
         });
     });
   },
