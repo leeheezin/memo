@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const database = require("./database");
 
 app.use(bodyParser.json());
+app.use(express.static("dist"));
 
 app.get("/api/memos", async (req, res) => {
   const result = await database.run("SELECT * FROM memos");
